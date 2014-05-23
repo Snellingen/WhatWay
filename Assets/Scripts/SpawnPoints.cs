@@ -5,7 +5,6 @@ public class SpawnPoints : MonoBehaviour
 {
     public TextMesh PointText;
     public Color PlusColor, MinusColor, GoldColor;
-    public int SortingLayer;
 
     private ColorTheme _activeColor = ColorTheme.Day; 
 
@@ -27,7 +26,6 @@ public class SpawnPoints : MonoBehaviour
         {
             spawnedText.color = _activeColor == ColorTheme.Day ? MinusColor : PlusColor; 
         }
-        spawnedText.renderer.sortingOrder = SortingLayer; 
         Destroy(spawnedText.gameObject, 1);
     }
 

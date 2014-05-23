@@ -16,16 +16,18 @@ public class Controller : MonoBehaviour
     public AudioSource NegativeSound;
     public AudioSource NeutralSound;
 
+    private ScoreGUI _scoreHandler; 
+
     private int _spawnSize = 1;
     private int _currentProgress = 0;
-    private int _nextLevel = 50;
-
-    private int _streak = 0;  
+    private int _nextLevel = 25;
+    private int _streak = 0;
 
 	void Start ()
 	{
 	    _spawner = GetComponent<Spawn>();
         _pointSpawner = GetComponent<SpawnPoints>();
+	    _scoreHandler = GetComponent<ScoreGUI>();
 
 	    InputManager.Instance.OnSwipe += OnSwipe;
 	}
@@ -41,7 +43,7 @@ public class Controller : MonoBehaviour
         if (_currentProgress >= _nextLevel && _spawnSize < 7)
         {
             _spawnSize += 2;
-            _nextLevel *= 2; 
+            _nextLevel *= 3; 
             _currentProgress = 0; 
         }
         _spawner.SpawnArrows((SpawnType)Random.Range(0, 4), (SpawnRotation)Random.Range(0, 4), _spawnSize);
@@ -57,7 +59,15 @@ public class Controller : MonoBehaviour
             if (PositiveSound.pitch < 2)
                 PositiveSound.pitch += 0.01f;
             PositiveSound.Play();
-            _pointSpawner.AddPoints(CalucalteScore(_timer, _streak, _spawnSize), _spawner.LastPosition);
+
+            if (_scoreHandler != null)
+            {
+                int score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
+
+                _pointSpawner.AddPoints(score, _spawner.LastPosition);
+
+                _scoreHandler.AddScore(score);
+            }
             _timer = 0; 
         }
         else
@@ -65,22 +75,14 @@ public class Controller : MonoBehaviour
             _streak = 0;
             NegativeSound.Play();
             _pointSpawner.AddPoints(-50, _spawner.LastPosition);
+
+            _scoreHandler.AddScore(-50);
+
             PositiveSound.pitch = 1f;
             _timer = 0; 
         }
 
         _spawner.AnimeSpawn();
         SpawnNewArrows();
-    }
-
-    public int CalucalteScore(float time, int streak, int cntArrows)
-    {
-        var timeBonus = 10000 / (_timer * 1000);
-        if (timeBonus > 100 || timeBonus <= 0) timeBonus = 100; 
-        var streakBonus = streak*cntArrows; 
-        int total = (int)(timeBonus * streakBonus);
-        Debug.Log("Timebonus: " + timeBonus + " StreakBonus: " + streakBonus + " Total =" + total );
-
-        return total;
     }
 }
