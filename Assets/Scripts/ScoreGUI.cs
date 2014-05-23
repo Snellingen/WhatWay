@@ -15,6 +15,11 @@ public class ScoreGUI : MonoBehaviour
         WriteHiScore(_hiScore);
 	}
 
+    public void NewGame()
+    {
+        _score = 0; 
+    }
+
     public void AddScore(int score)
     {
         _score += score; 

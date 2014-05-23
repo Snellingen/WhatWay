@@ -45,10 +45,12 @@ public class Spawn : MonoBehaviour
 
     public void StartGame()
     {
+        AnimeSpawn();
         var spwnpos = Camera.main.ScreenToWorldPoint(new Vector2(_screenSize.x / 2, _screenSize.y / 2));
         spwnpos.z = 10; 
         UpdateSpawnArea();
         SpawnArrow(SpawnRotation.Right, 1, spwnpos);
+        LastSpawRotation = SpawnRotation.Right;
     }
 
     public void AnimeSpawn()

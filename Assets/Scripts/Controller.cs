@@ -4,8 +4,6 @@
 [RequireComponent(typeof(SpawnPoints))]
 public class Controller : MonoBehaviour
 {
-
-    public GameObject SpawObject;
     private Spawn _spawner;
     private SpawnPoints _pointSpawner; 
 
@@ -38,6 +36,17 @@ public class Controller : MonoBehaviour
         _timer += Time.deltaTime;
 	}
 
+    public void NewGame()
+    {
+        _spawnSize = 1;
+        _currentProgress = 0;
+        _nextLevel = 25;
+        _streak = 0; 
+
+        _scoreHandler.NewGame();
+        _spawner.StartGame();
+    }
+
     public void SpawnNewArrows()
     {
         if (_currentProgress >= _nextLevel && _spawnSize < 7)
@@ -62,13 +71,15 @@ public class Controller : MonoBehaviour
 
             if (_scoreHandler != null)
             {
-                int score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
+                var score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
 
                 _pointSpawner.AddPoints(score, _spawner.LastPosition);
 
                 _scoreHandler.AddScore(score);
             }
-            _timer = 0; 
+            _timer = 0;
+            _spawner.AnimeSpawn();
+            SpawnNewArrows();
         }
         else
         {
@@ -79,10 +90,8 @@ public class Controller : MonoBehaviour
             _scoreHandler.AddScore(-50);
 
             PositiveSound.pitch = 1f;
+            NewGame();
             _timer = 0; 
         }
-
-        _spawner.AnimeSpawn();
-        SpawnNewArrows();
     }
 }
