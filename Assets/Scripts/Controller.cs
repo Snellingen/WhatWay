@@ -62,9 +62,11 @@ public class Controller : MonoBehaviour
 
     public void OnSwipe(SwipeDirection dir)
     {
-        if ((int)dir == (int)_spawner.LastSpawRotation)
+        if ((int)dir == (int)_spawner.LastSpawRotation || (int)dir != (int)_spawner.LastSpawRotation)
         {
-            _streak++;
+            if (_timer < 0.8)
+                _streak++;
+            else _streak = 1;
             if (PositiveSound.pitch < 2)
                 PositiveSound.pitch += 0.01f;
             PositiveSound.Play();
@@ -73,7 +75,7 @@ public class Controller : MonoBehaviour
             {
                 var score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
 
-                _pointSpawner.AddPoints(score, _spawner.LastPosition);
+                _pointSpawner.AddPoints(score, _spawner.LastPosition, _streak > 1);
 
                 _scoreHandler.AddScore(score);
             }

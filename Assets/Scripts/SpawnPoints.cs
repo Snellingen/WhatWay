@@ -13,18 +13,18 @@ public class SpawnPoints : MonoBehaviour
         GameData.Instance.ThemeChange += SwitchTheme; 
     }
 
-    public void AddPoints(int amount, Vector2 position)
+    public void AddPoints(int amount, Vector2 position, bool streak = false)
     {
         var spawnedText = Instantiate(PointText, position, PointText.transform.rotation) as TextMesh;
         if (spawnedText == null) return;
         spawnedText.text = (string.Format("{0}{1}{2}", amount > 0 ? "+" : "", amount, "p"));
         if (amount > 0)
         {
-            spawnedText.color = _activeColor == ColorTheme.Day ? PlusColor : GoldColor; 
+            spawnedText.color = streak ? PlusColor : GoldColor; 
         }
         else
         {
-            spawnedText.color = _activeColor == ColorTheme.Day ? MinusColor : PlusColor; 
+            spawnedText.color = MinusColor; 
         }
         Destroy(spawnedText.gameObject, 1);
     }
