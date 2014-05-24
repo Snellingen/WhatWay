@@ -24,8 +24,8 @@ public class Spawn : MonoBehaviour
     public GameObject SpawnObject;
     public int ZIndex = 0;
     public float Offset = 0.64f;
-    public float ScreenOffsetTop = 0.7f;
-    public float ScreenOffsetBottom = 0.7f;
+    public float ScreenOffsetTop = 0.5f;
+    public float ScreenOffsetBottom = 0.5f;
     public float ScreenOffsetLeft = 0.5f;
     public float ScreenOffsetRight = 0.5f;
 
@@ -75,7 +75,7 @@ public class Spawn : MonoBehaviour
             }
         }
 
-        Destroy(_rightSpawn, 2);
+        Destroy(_rightSpawn, !SlowSpawn ? 2 : 3);
 
         if (LastSpawned.Count == 0) return;
         foreach (var go in LastSpawned.Select(o => o as GameObject))
@@ -92,6 +92,9 @@ public class Spawn : MonoBehaviour
     }
     public bool SpawnArrows(SpawnType type, SpawnRotation rotation, int spawnSize = 5)
     {
+        if (spawnSize >= 5)
+            ScreenOffsetTop = ScreenOffsetBottom = ScreenOffsetRight = ScreenOffsetLeft = 0.7f; 
+
         UpdateSpawnArea();
         LastSpawRotation = rotation;
 
@@ -99,8 +102,8 @@ public class Spawn : MonoBehaviour
 
         var sOffXl = screenOffset.x * ScreenOffsetLeft;
         var sOffXr = screenOffset.x * ScreenOffsetRight;
-        var sOffYt = screenOffset.x * ScreenOffsetTop;
-        var sOffYb = screenOffset.x * ScreenOffsetBottom;
+        var sOffYt = screenOffset.y * ScreenOffsetTop;
+        var sOffYb = screenOffset.y * ScreenOffsetBottom;
 
         var spwnpos = Camera.main.ScreenToWorldPoint(new Vector3(
             Random.Range(sOffXl, _screenSize.x - sOffXr),

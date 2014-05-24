@@ -21,6 +21,8 @@ public class Controller : MonoBehaviour
     private int _nextLevel = 25;
     private int _streak = 0;
 
+    public bool Cheat = false; 
+
 	void Start ()
 	{
 	    _spawner = GetComponent<Spawn>();
@@ -62,7 +64,7 @@ public class Controller : MonoBehaviour
 
     public void OnSwipe(SwipeDirection dir)
     {
-        if ((int)dir == (int)_spawner.LastSpawRotation)
+        if ((int)dir == (int)_spawner.LastSpawRotation || Cheat)
         {
             if (_timer < 0.8)
                 _streak++;
