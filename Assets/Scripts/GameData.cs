@@ -27,8 +27,6 @@ public class GameData : MonoBehaviour {
         var handler = ThemeChange;
         if (handler != null) handler(theme);
     }
-
-    public Transform Trail;
     public float SwipeThreshold = 80;
 
     void Awake ()

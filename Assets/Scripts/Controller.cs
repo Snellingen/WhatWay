@@ -62,7 +62,7 @@ public class Controller : MonoBehaviour
 
     public void OnSwipe(SwipeDirection dir)
     {
-        if ((int)dir == (int)_spawner.LastSpawRotation || (int)dir != (int)_spawner.LastSpawRotation)
+        if ((int)dir == (int)_spawner.LastSpawRotation)
         {
             if (_timer < 0.8)
                 _streak++;

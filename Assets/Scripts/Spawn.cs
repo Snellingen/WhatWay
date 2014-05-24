@@ -20,6 +20,7 @@ public enum SpawnRotation
 
 public class Spawn : MonoBehaviour
 {
+    public bool SlowSpawn; 
     public GameObject SpawnObject;
     public int ZIndex = 0;
     public float Offset = 0.64f;
@@ -60,16 +61,16 @@ public class Spawn : MonoBehaviour
             switch (LastSpawRotation)
             {
                 case SpawnRotation.Left:
-                    _rightSpawn.animation.Play("MoveLeft");
+                    _rightSpawn.animation.Play(!SlowSpawn ? "MoveLeft" : "MoveLeftSlow");
                     break;
                 case SpawnRotation.Right:
-                    _rightSpawn.animation.Play("MoveRight");
+                    _rightSpawn.animation.Play(!SlowSpawn ? "MoveRight" : "MoveRightSlow");
                     break;
                 case SpawnRotation.Down:
-                    _rightSpawn.animation.Play("MoveDown");
+                    _rightSpawn.animation.Play(!SlowSpawn ? "MoveDown" : "MoveDownSlow");
                     break;
                 case SpawnRotation.Up:
-                    _rightSpawn.animation.Play("MoveUp");
+                    _rightSpawn.animation.Play(!SlowSpawn ? "MoveUp" : "MoveUpSlow");
                     break;
             }
         }
