@@ -10,7 +10,8 @@ public enum TypeColor
     Sprite,
     GUI,
     Camera,
-    TextMesh
+    TextMesh,
+    GUIAlpha
 }
 
 public class ThemeColor : MonoBehaviour
@@ -45,6 +46,18 @@ public class ThemeColor : MonoBehaviour
             case TypeColor.TextMesh:
                 GetComponent<TextMesh>().color = Colors[(int) ActiveTheme];
                 break; 
+            case TypeColor.GUIAlpha:
+                var guiTex = GetComponent<GUITexture>();
+                var newColor = Colors[(int)ActiveTheme];
+                newColor.a = guiTex.color.a;
+                GetComponent<GUITexture>().color = newColor;
+                break;
         }
+    }
+
+    void OnDestroy()
+    {
+        if (GameData.Instance != null)
+            GameData.Instance.ThemeChange -= SwitchTheme;
     }
 }

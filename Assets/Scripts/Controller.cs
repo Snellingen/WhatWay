@@ -13,8 +13,9 @@ public class Controller : MonoBehaviour
     public AudioSource PositiveSound;
     public AudioSource NegativeSound;
     public AudioSource NeutralSound;
+    private ScoreGUI _scoreHandler;
 
-    private ScoreGUI _scoreHandler; 
+    private SceneFade _sceneFade; 
 
     private int _spawnSize = 1;
     private int _currentProgress = 0;
@@ -28,8 +29,10 @@ public class Controller : MonoBehaviour
 	    _spawner = GetComponent<Spawn>();
         _pointSpawner = GetComponent<SpawnPoints>();
 	    _scoreHandler = GetComponent<ScoreGUI>();
-
-	    InputManager.Instance.OnSwipe += OnSwipe;
+	    _sceneFade = FindObjectOfType<SceneFade>();
+        if (_sceneFade != null) 
+            _sceneFade.FadeOut();
+	    InputManager.Instance.Swipe += OnSwipe;
 	}
 	
 	void Update ()
@@ -89,9 +92,9 @@ public class Controller : MonoBehaviour
         {
             _streak = 0;
             NegativeSound.Play();
-            _pointSpawner.AddPoints(-50, _spawner.LastPosition);
+            _pointSpawner.AddPoints((int)-_scoreHandler.GetScore(), _spawner.LastPosition);
 
-            _scoreHandler.AddScore(-50);
+            _scoreHandler.AddScore((int)-_scoreHandler.GetScore());
 
             PositiveSound.pitch = 1f;
             NewGame();

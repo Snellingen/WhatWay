@@ -30,6 +30,16 @@ public class ScoreGUI : MonoBehaviour
         WriteHiScore(_hiScore);
     }
 
+    public float GetHighScore()
+    {
+        return _hiScore;
+    }
+
+    public float GetScore()
+    {
+        return _score; 
+    }
+
     public void AddNewHiScore(float hiscore)
     {
         _hiScore = hiscore; 
@@ -44,7 +54,7 @@ public class ScoreGUI : MonoBehaviour
 
     public void WriteHiScore(float hiscore)
     {
-        HiScore.text = string.Format("{0} {1}", "Hi-Score:", hiscore);
+        HiScore.text = string.Format("{0} {1}", "Best Score:", hiscore);
     }
 
     public int CalucalteScore(float time, int streak, int cntArrows)

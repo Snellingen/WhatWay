@@ -6,24 +6,48 @@ public enum SwipeDirection
     Right,
     Left,
     Up,
-    Down
+    Down,
+    NONE
+}
+
+public enum TapState
+{
+    Down,
+    Tapped
 }
 
 public class InputManager : MonoBehaviour
 {
     public delegate void OnSwipeEvent(SwipeDirection dir);
-    public event OnSwipeEvent OnSwipe;
+    public event OnSwipeEvent Swipe;
 
-    public Transform Trail; 
-    public float SwipeThreshold = 80; 
-
-    private Vector2 _firstPressPos, _secondPressPos, _currentSwipe; 
-
-    protected virtual void OnOnSwipe(SwipeDirection dir)
+    protected virtual void OnSwipe(SwipeDirection dir)
     {
-        var handler = OnSwipe;
+        var handler = Swipe;
         if (handler != null) handler(dir);
     }
+
+    public delegate void OnTapEvent(Vector2 tapPos, TapState tapState);
+    public event OnTapEvent Tap;
+
+    protected virtual void OnTap(Vector2 tappos, TapState tapState)
+    {
+        var handler = Tap;
+        if (handler != null) handler(tappos, tapState);
+    }
+
+    public Transform Trail;
+    public float SwipeThreshold = 80;
+
+    private bool _mouseDownLastFrame = false;
+    private bool _isTouchInput = true;
+    private Vector2 _firstPressPos, _secondPressPos, _currentSwipe;
+
+#if UNITY_IPHONE
+    private const float TOLERANCE = 40;
+#else
+    private const float TOLERANCE = 5;
+#endif
 
     private static InputManager _instance;
 
@@ -41,41 +65,77 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     void Update()
     {
-       CheckTouch();
-       DrawTrail();
-       CheckKeyboard();
+        if (Trail == null)
+            Trail = GameObject.FindGameObjectWithTag("Trail").transform; 
+
+        CheckTouch();
+        if (!_isTouchInput)
+            CheckMouse();
+        DrawTrail();
+        CheckKeyboard();
     }
+
 
     public void CheckTouch()
     {
-        if (Input.touches.Length <= 0) return;
+        if (Input.touches.Length <= 0)
+        {
+            _isTouchInput = false; 
+            return;
+        }
+        _isTouchInput = true; 
         var t = Input.GetTouch(0);
         if (t.phase == TouchPhase.Began)
         {
             _firstPressPos = new Vector2(t.position.x, t.position.y);
+            OnTap(_firstPressPos, TapState.Down);
         }
+        if (t.phase == TouchPhase.Moved)
+            OnTap(new Vector2(t.position.x, t.position.y), TapState.Down);
+
         if (t.phase != TouchPhase.Ended) return;
         _secondPressPos = new Vector2(t.position.x, t.position.y);
         _currentSwipe = new Vector3(_secondPressPos.x - _firstPressPos.x, _secondPressPos.y - _firstPressPos.y);
-        _currentSwipe.Normalize();
-        if (_currentSwipe.y > 0 && _currentSwipe.x > -0.5f && _currentSwipe.x < 0.5f)
+
+        if (_currentSwipe.sqrMagnitude < TOLERANCE)
         {
-            OnSwipe(SwipeDirection.Up);
+            OnTap(_firstPressPos, TapState.Tapped);
         }
-        if (_currentSwipe.y < 0 && _currentSwipe.x > -0.5f && _currentSwipe.x < 0.5f)
+        else
         {
-            OnSwipe(SwipeDirection.Down);
+            var dir = CheckSwipe(_currentSwipe);
+            if (dir != SwipeDirection.NONE)
+                OnSwipe(dir);
         }
-        if (_currentSwipe.x < 0 && _currentSwipe.y > -0.5f && _currentSwipe.y < 0.5f)
+    }
+
+    private static SwipeDirection CheckSwipe(Vector3 swipeVector)
+    {
+        swipeVector.Normalize();
+        if (swipeVector.y > 0 && swipeVector.x > -0.5f && swipeVector.x < 0.5f)
         {
-            OnSwipe(SwipeDirection.Left);
+            return SwipeDirection.Up;
         }
-        if (_currentSwipe.x > 0 && _currentSwipe.y > -0.5f && _currentSwipe.y < 0.5f)
+        if (swipeVector.y < 0 && swipeVector.x > -0.5f && swipeVector.x < 0.5f)
         {
-            OnSwipe(SwipeDirection.Right);
+            return SwipeDirection.Down;
         }
+        if (swipeVector.x < 0 && swipeVector.y > -0.5f && swipeVector.y < 0.5f)
+        {
+            return SwipeDirection.Left;
+        }
+        if (swipeVector.x > 0 && swipeVector.y > -0.5f && swipeVector.y < 0.5f)
+        {
+            return SwipeDirection.Right;
+        }
+        return SwipeDirection.NONE;
     }
 
     private void DrawTrail()
@@ -83,17 +143,17 @@ public class InputManager : MonoBehaviour
         if (Input.touches.Length > 0)
         {
             var t = Input.GetTouch(0);
-            if (t.phase == TouchPhase.Began || t.phase == TouchPhase.Moved)
-            {
-                var pos = Camera.main.ScreenToWorldPoint(t.position);
-                Trail.position = new Vector3(pos.x, pos.y, 2);
-            }
+            if (t.phase != TouchPhase.Began && t.phase != TouchPhase.Moved) return;
+            var pos = Camera.main.ScreenToWorldPoint(t.position);
+            if (Trail != null)
+            Trail.position = new Vector3(pos.x, pos.y, 2);
         }
         else
         {
             if (!Input.GetMouseButton(0)) return;
             var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Trail.position = new Vector3(pos.x, pos.y, 2);
+            if (Trail != null)
+                Trail.position = new Vector3(pos.x, pos.y, 2);
         }
     }
 
@@ -115,5 +175,18 @@ public class InputManager : MonoBehaviour
         {
             OnSwipe(SwipeDirection.Down);
         }
+    }
+
+    public void CheckMouse()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            OnTap(Input.mousePosition, TapState.Down);
+            _mouseDownLastFrame = true; 
+            return;
+        }
+        if (!Input.GetMouseButtonUp(0) || !_mouseDownLastFrame) return;
+        OnTap(Input.mousePosition, TapState.Tapped);
+        _mouseDownLastFrame = false;
     }
 }

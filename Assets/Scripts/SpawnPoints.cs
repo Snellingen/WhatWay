@@ -20,7 +20,7 @@ public class SpawnPoints : MonoBehaviour
         spawnedText.text = (string.Format("{0}{1}{2}", amount > 0 ? "+" : "", amount, "p"));
         if (amount > 0)
         {
-            spawnedText.color = streak ? PlusColor : GoldColor; 
+            spawnedText.color = streak ? GoldColor : PlusColor; 
         }
         else
         {

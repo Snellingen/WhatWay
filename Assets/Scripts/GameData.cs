@@ -27,15 +27,21 @@ public class GameData : MonoBehaviour {
         var handler = ThemeChange;
         if (handler != null) handler(theme);
     }
-    public float SwipeThreshold = 80;
 
-    void Awake ()
+    void Awake()
     {
+        DontDestroyOnLoad(this);
+    }
+
+    public void ChangeTheme(ColorTheme newTheme)
+    {
+        CurrenTheme = newTheme; 
+        OnThemeChange(newTheme);
     }
 
 	void Start ()
 	{
-	    ThemeChange(CurrenTheme);
+	    OnThemeChange(CurrenTheme);
 	}
 	
 	void Update () {
