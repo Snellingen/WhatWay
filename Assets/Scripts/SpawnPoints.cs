@@ -21,10 +21,12 @@ public class SpawnPoints : MonoBehaviour
         if (amount > 0)
         {
             spawnedText.color = streak ? GoldColor : PlusColor; 
+            spawnedText.fontStyle = streak ? FontStyle.Bold : FontStyle.Italic;
         }
         else
         {
-            spawnedText.color = MinusColor; 
+            spawnedText.color = MinusColor;
+            spawnedText.fontStyle = FontStyle.Italic;
         }
         Destroy(spawnedText.gameObject, 1);
     }

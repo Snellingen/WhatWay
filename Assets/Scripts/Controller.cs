@@ -70,10 +70,17 @@ public class Controller : MonoBehaviour
         if ((int)dir == (int)_spawner.LastSpawRotation || Cheat)
         {
             if (_timer < 0.8)
+            {
                 _streak++;
-            else _streak = 1;
-            if (PositiveSound.pitch < 2)
-                PositiveSound.pitch += 0.01f;
+                if (PositiveSound.pitch < 2)
+                    PositiveSound.pitch += 0.01f;
+            }
+            else
+            {
+                _streak = 1;
+                PositiveSound.pitch = 1;
+            }
+
             PositiveSound.Play();
 
             if (_scoreHandler != null)

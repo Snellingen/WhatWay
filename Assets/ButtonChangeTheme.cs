@@ -11,6 +11,7 @@ public class ButtonChangeTheme : ButtonTask
 
     void Start()
     {
+       _renderer = GetComponent<SpriteRenderer>();
        UpdateSprite();
     }
 
@@ -25,7 +26,7 @@ public class ButtonChangeTheme : ButtonTask
 
     private void UpdateSprite()
     {
-        _renderer = GetComponent<SpriteRenderer>();
+        
         _renderer.sprite = GameData.Instance.CurrenTheme == ColorTheme.Day
             ? NightSprite
             : DaySprite;

@@ -10,6 +10,8 @@ public class GameData : MonoBehaviour {
 
     public ColorTheme CurrenTheme = ColorTheme.Day;
 
+    public bool Mute = false; 
+
     public static GameData Instance
     {
         get
