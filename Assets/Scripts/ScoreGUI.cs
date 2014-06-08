@@ -21,7 +21,7 @@ public class ScoreGUI : MonoBehaviour
 
     public void AddScore(float score)
     {
-        _score = score; 
+        _score += score; 
         WriteScore();
     }
 
