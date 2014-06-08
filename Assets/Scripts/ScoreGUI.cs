@@ -1,18 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Linq;
+using UnityEngine;
 
 public class ScoreGUI : MonoBehaviour
 {
     public TextMesh HiScore; 
     public TextMesh Score;
 
-    private float _hiScore;
     private float _score = 0; 
 
 	void Start () {
-	    WriteScore(_score);
-	    _hiScore = PlayerPrefs.GetFloat("HiScore");
-        WriteHiScore(_hiScore);
+	    WriteScore();
+	    GameData.Instance.LoadScore();
+	    WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last());
 	}
 
     public void NewGame()
@@ -20,36 +19,31 @@ public class ScoreGUI : MonoBehaviour
         _score = 0; 
     }
 
-    public void AddScore(int score)
+    public void AddScore(float score)
     {
-        _score += score; 
-        WriteScore(_score);
-
-        if (!(_score > _hiScore)) return;
-        AddNewHiScore(_score);
-        WriteHiScore(_hiScore);
+        _score = score; 
+        WriteScore();
     }
 
-    public float GetHighScore()
+    public void ClearAndUpdate()
     {
-        return _hiScore;
+        _score = 0; 
+        WriteScore();
+        WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last());
+    }
+
+    public void AddScoreToList()
+    {
+        GameData.Instance.Score.Add(_score);
     }
 
     public float GetScore()
     {
         return _score; 
     }
-
-    public void AddNewHiScore(float hiscore)
+    public void WriteScore()
     {
-        _hiScore = hiscore; 
-        PlayerPrefs.SetFloat("HiScore", hiscore);
-        PlayerPrefs.Save();
-    }
-
-    public void WriteScore(float score)
-    {
-        Score.text = string.Format("{0} {1}", "Score:", score);
+        Score.text = string.Format("{0} {1}", "Score:", _score);
     }
 
     public void WriteHiScore(float hiscore)

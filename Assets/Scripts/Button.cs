@@ -7,7 +7,7 @@ public class Button : MonoBehaviour
     private SpriteRenderer _srender;
     private Color _originalColor;
     private bool _active = false;
-    public AudioSource ButtonSound; 
+    public AudioSource ButtonSound;
 
     public ButtonTask Action; 
 

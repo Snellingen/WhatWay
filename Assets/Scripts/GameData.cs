@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
+using UnityEngine;
 
 public class GameData : MonoBehaviour {
 
@@ -12,6 +15,14 @@ public class GameData : MonoBehaviour {
 
     public bool Mute = false; 
 
+    [HideInInspector]
+    public List<float> Score = new List<float>();
+
+    public float ThisGameScore = 0;
+    public float ThisGameART = 0;
+    public float ThisGameAC = 0;
+    public float ThisGameStreak = 0; 
+
     public static GameData Instance
     {
         get
@@ -22,6 +33,36 @@ public class GameData : MonoBehaviour {
             Debug.Log("Missing GameData!");
             return _instance;
         }
+    }
+
+    public List<float> GetScore()
+    {
+        return Score; 
+    }
+
+    public void TryAddScore(float newScore)
+    {
+        Score.Sort();
+        Score.Add(newScore);
+        Score.Sort();
+        while (Score.Count > 5)
+            Score.RemoveAt(0);
+    }
+
+    public void SaveScore()
+    {
+        Score.Sort();
+        PlayerPrefsX.SetFloatArray("Score", Score.ToArray());
+    }
+
+    public void LoadScore()
+    {
+       Score.Clear();
+        foreach (var score in PlayerPrefsX.GetFloatArray("Score"))
+        {
+            Score.Add(score);
+        }
+        Score.Sort();
     }
 
     protected virtual void OnThemeChange(ColorTheme theme)

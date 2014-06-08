@@ -29,7 +29,9 @@ public class Spawn : MonoBehaviour
     public float ScreenOffsetLeft = 0.5f;
     public float ScreenOffsetRight = 0.5f;
 
+    
     [HideInInspector]
+
     public SpawnRotation LastSpawRotation;
     public Vector2 LastPosition; 
     public List<Object> LastSpawned = new List<Object>();
@@ -84,6 +86,11 @@ public class Spawn : MonoBehaviour
             Destroy(go, 1);
         }
         LastSpawned.Clear();
+    }
+
+    public void Clear()
+    {
+        AnimeSpawn();
     }
 
     public void UpdateSpawnArea()
