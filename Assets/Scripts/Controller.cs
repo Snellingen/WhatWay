@@ -23,16 +23,22 @@ public class Controller : MonoBehaviour
 
     private int _spawnSize = 1;
     private int _currentProgress = 0;
-    private int _nextLevel = 25;
+    private int _nextLevel = 10;
+    private int _numCleared = 0; 
     private int _streak = 0;
     private int _maxStreak = 0;
-    private List<float> _reactionTimes = new List<float>(); 
+    private readonly List<float> _reactionTimes = new List<float>(); 
 
     public bool Cheat = false;
 
     [HideInInspector] 
     public float ThisGameScore = 0; 
     public bool Pause = false;
+
+    void Awake()
+    {
+        NewGame();
+    }
 
     void Start()
     {
@@ -43,6 +49,13 @@ public class Controller : MonoBehaviour
         if (_sceneFade != null)
             _sceneFade.FadeOut();
         InputManager.Instance.Swipe += OnSwipe;
+
+        if (PositiveSound != null)
+            PositiveSound = GameObject.Find("Positive").GetComponent<AudioSource>();
+        if (NeutralSound != null)
+            NeutralSound = GameObject.Find("Netural").GetComponent<AudioSource>();
+        if (NegativeSound != null)
+            NegativeSound = GameObject.Find("Negative").GetComponent<AudioSource>(); 
     }
 
     void Update()
@@ -54,13 +67,18 @@ public class Controller : MonoBehaviour
 
     public void NewGame()
     {
-        _spawnSize = 1;
-        _currentProgress = 0;
-        _nextLevel = 25;
+        _reactionTimes.Clear();
         _streak = 0;
+        _maxStreak = 0;
+        _currentProgress = 0;
+        _spawnSize = 1;
+        _numCleared = 0;
+        _nextLevel = 10;
 
-        _scoreHandler.NewGame();
-        _spawner.StartGame();
+        if (_scoreHandler != null)
+            _scoreHandler.NewGame();
+        if (_spawner != null)
+            _spawner.StartGame();
     }
 
     public void SpawnNewArrows()
@@ -82,8 +100,8 @@ public class Controller : MonoBehaviour
         _streak = 0;
         _maxStreak = 0;
         _currentProgress = 0;
-        _spawnSize = 1; 
-
+        _spawnSize = 1;
+        _numCleared = 0; 
         _spawner.Clear();
         _scoreHandler.ClearAndUpdate();
     }
@@ -91,6 +109,7 @@ public class Controller : MonoBehaviour
     public void OnSwipe(SwipeDirection dir)
     {
         if (Pause) return;
+
         if ((int)dir == (int)_spawner.LastSpawRotation || Cheat)
         {
             if (_timer < 0.8)
@@ -107,6 +126,7 @@ public class Controller : MonoBehaviour
                 PositiveSound.pitch = 1;
             }
 
+            _numCleared ++;
             PositiveSound.Play();
 
             if (_scoreHandler != null)
@@ -133,9 +153,11 @@ public class Controller : MonoBehaviour
             _reactionTimes.RemoveAt(0);
 
             GameData.Instance.ThisGameScore = _scoreHandler.GetScore();
-            GameData.Instance.ThisGameART = _reactionTimes.Average() * 1000;
+            GameData.Instance.ThisGameART = _reactionTimes.Count > 0 ?_reactionTimes.Average() * 1000 : 0;
             GameData.Instance.ThisGameStreak = _maxStreak;
-            GameData.Instance.ThisGameAC = _currentProgress; 
+            GameData.Instance.ThisGameAC = _numCleared; 
+
+            GameData.Instance.SaveScore();
 
             if (GameOverScreen != null)
             {
@@ -149,5 +171,13 @@ public class Controller : MonoBehaviour
             PositiveSound.pitch = 1f;
             _timer = 0;
         }
+
+       
+    }
+
+    void OnDestroy()
+    {
+        if (InputManager.Instance != null) 
+        InputManager.Instance.Swipe -= OnSwipe;
     }
 }

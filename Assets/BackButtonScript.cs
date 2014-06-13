@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 
-public class ChangeScene : ButtonTask {
+public class BackButtonScript : ButtonTask {
 
     private SceneFade _sceneFade;
-    public string ChangeTo = "GameScene"; 
+    public string ChangeTo = "GameScene";
+
+
 
     void Start()
     {
         _sceneFade = FindObjectOfType<SceneFade>();
-        _sceneFade.FadeInDone += SwitchScene; 
+        _sceneFade.FadeInDone += SwitchScene;
     }
 
     public override void Activate()
     {
+
         _sceneFade.FadeIn();
     }
 
@@ -26,7 +29,7 @@ public class ChangeScene : ButtonTask {
     {
         if (_sceneFade != null)
         {
-            _sceneFade.FadeInDone -= SwitchScene; 
+            _sceneFade.FadeInDone -= SwitchScene;
         }
     }
 }

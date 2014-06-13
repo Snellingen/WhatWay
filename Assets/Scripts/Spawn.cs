@@ -91,6 +91,7 @@ public class Spawn : MonoBehaviour
     public void Clear()
     {
         AnimeSpawn();
+        Destroy(_rightSpawn);
     }
 
     public void UpdateSpawnArea()

@@ -29,6 +29,7 @@ public class ScoreGUI : MonoBehaviour
     {
         _score = 0; 
         WriteScore();
+        GameData.Instance.Score.Sort();
         WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last());
     }
 

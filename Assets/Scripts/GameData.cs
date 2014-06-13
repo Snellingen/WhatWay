@@ -13,15 +13,15 @@ public class GameData : MonoBehaviour {
 
     public ColorTheme CurrenTheme = ColorTheme.Day;
 
-    public bool Mute = false; 
-
     [HideInInspector]
     public List<float> Score = new List<float>();
 
     public float ThisGameScore = 0;
     public float ThisGameART = 0;
     public float ThisGameAC = 0;
-    public float ThisGameStreak = 0; 
+    public float ThisGameStreak = 0;
+
+    private static GameData _objInstance; 
 
     public static GameData Instance
     {
@@ -71,7 +71,7 @@ public class GameData : MonoBehaviour {
         if (handler != null) handler(theme);
     }
 
-    void Awake()
+    private void Awake()
     {
         DontDestroyOnLoad(this);
     }

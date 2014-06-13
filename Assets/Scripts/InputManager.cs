@@ -21,6 +21,7 @@ public class InputManager : MonoBehaviour
     public delegate void OnSwipeEvent(SwipeDirection dir);
     public event OnSwipeEvent Swipe;
 
+    public string BackButtonLoadScene = "Menu"; 
     protected virtual void OnSwipe(SwipeDirection dir)
     {
         var handler = Swipe;
@@ -73,7 +74,7 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         if (Trail == null)
-            Trail = GameObject.FindGameObjectWithTag("Trail").transform; 
+            Trail = GameObject.FindGameObjectWithTag("Trail").transform;
 
         CheckTouch();
         if (!_isTouchInput)
@@ -175,6 +176,11 @@ public class InputManager : MonoBehaviour
         {
             OnSwipe(SwipeDirection.Down);
         }
+
+        if (!Input.GetKey(KeyCode.Escape)) return;
+        if (Application.loadedLevelName == BackButtonLoadScene)
+            Application.Quit();
+        else Application.LoadLevel(BackButtonLoadScene);
     }
 
     public void CheckMouse()

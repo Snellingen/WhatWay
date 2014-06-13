@@ -17,7 +17,7 @@ public class MuteSound : ButtonTask
 
     public override void Activate()
     {
-        GameData.Instance.Mute = !GameData.Instance.Mute;
+        AudioListener.pause = !AudioListener.pause; 
         UpdateSprite();
     }
 
@@ -25,7 +25,7 @@ public class MuteSound : ButtonTask
     private void UpdateSprite()
     {
         _renderer = GetComponent<SpriteRenderer>();
-        _renderer.sprite = !GameData.Instance.Mute
+        _renderer.sprite = !AudioListener.pause
             ? SoundOff
             : SoundOn;
     }

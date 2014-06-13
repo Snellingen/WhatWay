@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class SceneFade : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class SceneFade : MonoBehaviour
 
     private bool _fadeOut;
 
-    private bool _fadeIn; 
+    private bool _fadeIn;
 
     private float _preFrameTime = 0;
     private float _newFrameTime = 0;
@@ -26,7 +27,7 @@ public class SceneFade : MonoBehaviour
 
     private Color _color;
 
-    private bool _introFade = true; 
+    private bool _introFade = true;
 
     void Start()
     {
@@ -35,7 +36,7 @@ public class SceneFade : MonoBehaviour
         guiTexture.pixelInset = new Rect(0f, 0f, Screen.width, Screen.height);
         DontDestroyOnLoad(this);
         _newFrameTime = Time.realtimeSinceStartup;
-        _color = guiTexture.color; 
+        _color = guiTexture.color;
     }
 
     void Update()
@@ -65,7 +66,7 @@ public class SceneFade : MonoBehaviour
 
     public void FadeOut()
     {
-        _fadeOut = true; 
+        _fadeOut = true;
         guiTexture.color = Color.Lerp(guiTexture.color, Color.clear, fadeSpeed * _deltaTime);
         if (!(guiTexture.color.a <= 0.01f)) return;
         guiTexture.color = Color.clear;
@@ -74,8 +75,13 @@ public class SceneFade : MonoBehaviour
 
     public void FadeIn()
     {
-        _fadeIn = true; 
-        guiTexture.color = Color.Lerp(guiTexture.color, _color, fadeSpeed * _deltaTime);
+        _fadeIn = true;
+        guiTexture.color = Color.Lerp(guiTexture.color, new Color(
+            _color.r,
+            _color.g,
+            _color.b,
+           1), fadeSpeed * _deltaTime);
+
         if (!(guiTexture.color.a >= 0.5)) return;
         _fadeIn = false;
         OnFadeInDone();
