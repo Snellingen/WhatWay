@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 using System.Collections;
 
 public enum StatType
@@ -13,10 +14,15 @@ public class ShowStat : MonoBehaviour
 {
 
     public StatType TypeOfScore;
-    private TextMesh _text; 
+    private TextMesh _text;
+    private NumberFormatInfo _nfi;
 
 	void Awake ()
 	{
+
+        _nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+        _nfi.NumberGroupSeparator = " ";
+
 	    _text = GetComponent<TextMesh>();
 	    UpdateScore();
 	}
@@ -26,7 +32,7 @@ public class ShowStat : MonoBehaviour
         switch (TypeOfScore)
         {
             case StatType.Score:
-                _text.text = GameData.Instance.ThisGameScore.ToString(); 
+                _text.text = string.Format("{0}{1}", GameData.Instance.ThisGameScore.ToString("n0", _nfi), "p"); 
                 break;
             case StatType.AvgReactionTime:
                 _text.text = GameData.Instance.ThisGameART < 5000

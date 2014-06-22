@@ -9,24 +9,15 @@ public class TutText : MonoBehaviour
 
     private TextMesh _txt;
 
-
-
     void Start()
     {
         _txt = GetComponent<TextMesh>();
-        InputManager.Instance.Tap += OnTap; 
     }
 
 	void Update ()
 	{
 	    _txt.text = CurrentIndex < Text.Length ? Text[CurrentIndex] : ""; 
 	}
-
-    public void OnTap(Vector2 pos, TapState tapState)
-    {
-        if (tapState == TapState.Tapped)
-            CurrentIndex ++; 
-    }
 
     void OnDestroy()
     {

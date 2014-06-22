@@ -12,11 +12,14 @@ public class Controller : MonoBehaviour
     public float SecondsPerSpawn;
     private float _timer;
 
+    public CountDown CountDownTime; 
+
     public AudioSource PositiveSound;
     public AudioSource NegativeSound;
     public AudioSource NeutralSound;
 
     public GameObject GameOverScreen;
+
     private ScoreGUI _scoreHandler;
 
     private SceneFade _sceneFade;
@@ -31,9 +34,11 @@ public class Controller : MonoBehaviour
 
     public bool Cheat = false;
 
+    private bool _firstStrike = true; 
+
     [HideInInspector] 
     public float ThisGameScore = 0; 
-    public bool Pause = false;
+    private bool _pause = false;
 
     void Awake()
     {
@@ -60,13 +65,16 @@ public class Controller : MonoBehaviour
 
     void Update()
     {
-        if (Pause) return;
+        if (_pause) return;
         if (_spawner == null) return;
         _timer += Time.deltaTime;
     }
 
     public void NewGame()
     {
+
+        CountDownTime.ResetClock();
+        _firstStrike = true; 
         _reactionTimes.Clear();
         _streak = 0;
         _maxStreak = 0;
@@ -96,6 +104,7 @@ public class Controller : MonoBehaviour
 
     public void Clear()
     {
+        CountDownTime.ResetClock();
         _reactionTimes.Clear();
         _streak = 0;
         _maxStreak = 0;
@@ -108,71 +117,93 @@ public class Controller : MonoBehaviour
 
     public void OnSwipe(SwipeDirection dir)
     {
-        if (Pause) return;
+        if (_pause) return;
+
+        if (_firstStrike)
+        {
+            CountDownTime.StartClock();
+            _firstStrike = false; 
+        }
+
+        if (CountDownTime.TimeOut)
+            BadMove();
 
         if ((int)dir == (int)_spawner.LastSpawRotation || Cheat)
+            GoodMove();
+        else
+            BadMove();
+        
+    }
+
+    private void GoodMove()
+    {
+        if (_timer < 1.2)
         {
-            if (_timer < 0.8)
-            {
-                _streak++;
-                if (PositiveSound.pitch < 2)
-                    PositiveSound.pitch += 0.01f;
-            }
-            else
-            {
-                if (_streak > _maxStreak)
-                    _maxStreak = _streak; 
-                _streak = 1;
-                PositiveSound.pitch = 1;
-            }
-
-            _numCleared ++;
-            PositiveSound.Play();
-
-            if (_scoreHandler != null)
-            {
-                var score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
-                _reactionTimes.Add(_timer);
-                _pointSpawner.AddPoints(score, _spawner.LastPosition, _streak > 1);
-                _scoreHandler.AddScore(score);
-
-            }
-            _timer = 0;
-            _spawner.AnimeSpawn();
-            SpawnNewArrows();
+            _streak++;
+            if (PositiveSound.pitch < 2)
+                PositiveSound.pitch += 0.01f;
         }
         else
         {
             if (_streak > _maxStreak)
-                _maxStreak = _streak; 
-            
-            NegativeSound.Play();
-            _pointSpawner.AddPoints((int)-_scoreHandler.GetScore(), _spawner.LastPosition);
-
-            if (_reactionTimes.Count > 1)
-            _reactionTimes.RemoveAt(0);
-
-            GameData.Instance.ThisGameScore = _scoreHandler.GetScore();
-            GameData.Instance.ThisGameART = _reactionTimes.Count > 0 ?_reactionTimes.Average() * 1000 : 0;
-            GameData.Instance.ThisGameStreak = _maxStreak;
-            GameData.Instance.ThisGameAC = _numCleared; 
-
-            GameData.Instance.SaveScore();
-
-            if (GameOverScreen != null)
-            {
-                _scoreHandler.AddScoreToList();
-                GameOverScreen.SetActive(true);       
-                Pause = true;
-            }
-
-            Clear();
-
-            PositiveSound.pitch = 1f;
-            _timer = 0;
+                _maxStreak = _streak;
+            _streak = 1;
+            PositiveSound.pitch = 1;
         }
 
-       
+        _numCleared++;
+        PositiveSound.Play();
+
+        if (_scoreHandler != null)
+        {
+            var score = _scoreHandler.CalucalteScore(_timer, _streak, _spawnSize);
+            _reactionTimes.Add(_timer);
+            _pointSpawner.AddPoints(score, _spawner.LastPosition, _streak > 1);
+            _scoreHandler.AddScore(score);
+
+        }
+        _timer = 0;
+        _spawner.AnimeSpawn();
+        SpawnNewArrows();
+    }
+
+    private void BadMove()
+    {
+        if (_streak > _maxStreak)
+            _maxStreak = _streak;
+
+        NegativeSound.Play();
+        _pointSpawner.AddPoints((int)-_scoreHandler.GetScore(), _spawner.LastPosition);
+        GameData.FireVibrateMe();
+
+        if (_reactionTimes.Count > 1)
+            _reactionTimes.RemoveAt(0);
+
+        GameData.Instance.ThisGameScore = _scoreHandler.GetScore();
+        GameData.Instance.ThisGameART = _reactionTimes.Count > 0 ? _reactionTimes.Average() * 1000 : 0;
+        GameData.Instance.ThisGameStreak = _maxStreak;
+        GameData.Instance.ThisGameAC = _numCleared;
+
+        GameData.Instance.SaveScore();
+
+        if (GameOverScreen != null)
+        {
+            _scoreHandler.AddScoreToList();
+            GameOverScreen.SetActive(true);
+            SetPause(true);
+
+        }
+
+        Clear();
+
+        PositiveSound.pitch = 1f;
+        _timer = 0;
+    }
+
+    public void SetPause(bool value)
+    {
+        _pause = value;
+        CountDownTime.SetPause(value);
     }
 
     void OnDestroy()

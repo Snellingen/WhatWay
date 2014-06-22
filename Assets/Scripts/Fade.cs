@@ -15,12 +15,12 @@ public class Fade : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	    if (_timer >= FadePerSeconds/120)
-	    {
-            _mesh.color = new Color(_mesh.color.r, _mesh.color.g, _mesh.color.b, _mesh.color.a - FadePerSeconds / 120 );
-	        _timer -= FadePerSeconds/120; 
-	    }
-	    _timer += Time.deltaTime; 
+	void Update () 
+    {
+
+        _timer += Time.deltaTime; 
+        _mesh.color = new Color(_mesh.color.r, _mesh.color.g, _mesh.color.b, _mesh.color.a - FadePerSeconds);
+	    _timer -= FadePerSeconds; 
+
 	}
 }

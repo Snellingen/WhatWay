@@ -1,13 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameData : MonoBehaviour {
 
+    // Event
     public delegate void OnThemeChangeEvent(ColorTheme theme);
-
     public event OnThemeChangeEvent ThemeChange;
+
+    public static event EventHandler VibrateMe;
+
+    public static void FireVibrateMe()
+    {
+        var handler = VibrateMe;
+        if (handler != null) handler(null, EventArgs.Empty);
+    }
+
 
     private static GameData _instance;
 
