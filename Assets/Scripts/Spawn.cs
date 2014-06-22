@@ -21,7 +21,7 @@ public enum SpawnRotation
 public class Spawn : MonoBehaviour
 {
     public bool SlowSpawn; 
-    public GameObject SpawnObject;
+    public Arrow SpawnObject;
     public int ZIndex = 0;
     public float Offset = 0.64f;
     public float ScreenOffsetTop = 0.5f;
@@ -34,9 +34,9 @@ public class Spawn : MonoBehaviour
 
     public SpawnRotation LastSpawRotation;
     public Vector2 LastPosition; 
-    public List<Object> LastSpawned = new List<Object>();
+    public List<Arrow> LastSpawned = new List<Arrow>();
 
-    private GameObject _rightSpawn;
+    private Arrow _rightSpawn;
     private Vector2 _screenSize;
     
 
@@ -48,6 +48,9 @@ public class Spawn : MonoBehaviour
 
     public void StartGame()
     {
+        ObjectPool.CreatePool(SpawnObject);
+
+
         AnimeSpawn();
         var spwnpos = Camera.main.ScreenToWorldPoint(new Vector2(_screenSize.x / 2, _screenSize.y / 2));
         spwnpos.z = 10; 
@@ -77,13 +80,13 @@ public class Spawn : MonoBehaviour
             }
         }
 
-        Destroy(_rightSpawn, !SlowSpawn ? 2 : 3);
+        if (_rightSpawn != null) _rightSpawn.Recycle(!SlowSpawn ? 2 : 3);
 
         if (LastSpawned.Count == 0) return;
-        foreach (var go in LastSpawned.Select(o => o as GameObject))
+        foreach (var go in LastSpawned.Select(o => o as Arrow))
         {
             go.animation.Play("FadeFast");
-            Destroy(go, 1);
+            go.Recycle(1);
         }
         LastSpawned.Clear();
     }
@@ -91,7 +94,7 @@ public class Spawn : MonoBehaviour
     public void Clear()
     {
         AnimeSpawn();
-        Destroy(_rightSpawn);
+        _rightSpawn.Recycle();
     }
 
     public void UpdateSpawnArea()
@@ -168,8 +171,8 @@ public class Spawn : MonoBehaviour
         for (var i = 0; i < spawnSize; i++)
         {
             if (randomInt == i)
-                _rightSpawn = Instantiate(SpawnObject, spwnpos, spawnRotation) as GameObject;
-            else LastSpawned.Add(Instantiate(SpawnObject, spwnpos, defaultRotation));
+                _rightSpawn = ObjectPool.Spawn(SpawnObject, spwnpos, spawnRotation);
+            else LastSpawned.Add(ObjectPool.Spawn(SpawnObject, spwnpos, defaultRotation));
 
             switch (flockRotation)
             {
@@ -210,8 +213,8 @@ public class Spawn : MonoBehaviour
                 );
 
             if (randomInt == i)
-                _rightSpawn = Instantiate(SpawnObject, pos, spawnRotation) as GameObject;
-            else LastSpawned.Add(Instantiate(SpawnObject, pos, defaultRotation));
+                _rightSpawn = ObjectPool.Spawn(SpawnObject, pos, spawnRotation);
+            else LastSpawned.Add(ObjectPool.Spawn(SpawnObject, pos, defaultRotation));
         }
     }
     private void SpawnDiagonal(SpawnRotation rotation, int spawnSize, Vector3 spwnpos)
@@ -229,8 +232,8 @@ public class Spawn : MonoBehaviour
         for (var i = 0; i < spawnSize; i++)
         {
             if (randomInt == i)
-                _rightSpawn = Instantiate(SpawnObject, spwnpos, spawnRotation) as GameObject;
-            else LastSpawned.Add(Instantiate(SpawnObject, spwnpos, defaultRotation));
+                _rightSpawn = ObjectPool.Spawn(SpawnObject, spwnpos, spawnRotation);
+            else LastSpawned.Add(ObjectPool.Spawn(SpawnObject, spwnpos, defaultRotation));
 
             spwnpos.x += flockRotation == SpawnRotation.Left || flockRotation == SpawnRotation.Down ? Offset : -Offset;
             spwnpos.y -= Offset;
@@ -249,8 +252,8 @@ public class Spawn : MonoBehaviour
         for (var i = 0; i < spawnSize; i++)
         {
             if (randomInt == i)
-                _rightSpawn = Instantiate(SpawnObject, spwnpos, spawnRotation) as GameObject;
-            else LastSpawned.Add(Instantiate(SpawnObject, spwnpos, defaultRotation));
+                _rightSpawn = ObjectPool.Spawn(SpawnObject, spwnpos, spawnRotation);
+            else LastSpawned.Add(ObjectPool.Spawn(SpawnObject, spwnpos, defaultRotation));
 
             if (flockRotation == SpawnRotation.Left || flockRotation == SpawnRotation.Right)
                 spwnpos.x += Offset;
