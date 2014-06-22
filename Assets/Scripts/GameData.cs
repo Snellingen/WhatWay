@@ -10,6 +10,10 @@ public class GameData : MonoBehaviour {
 
     public static event EventHandler VibrateMe;
 
+    private Vector2 _oldScreenSize = Vector2.zero; 
+
+    public bool ScreenResize = false; 
+
     public static void FireVibrateMe()
     {
         var handler = VibrateMe;
@@ -95,7 +99,13 @@ public class GameData : MonoBehaviour {
 	    OnThemeChange(CurrenTheme);
 	}
 	
-	void Update () {
-	
+	void Update ()
+	{
+	    if (ScreenResize)
+	        ScreenResize = false;
+
+	    if (Screen.width == _oldScreenSize.x && Screen.height == _oldScreenSize.y) return;
+	    ScreenResize = true; 
+	    _oldScreenSize = new Vector2(Screen.width, Screen.height);
 	}
 }

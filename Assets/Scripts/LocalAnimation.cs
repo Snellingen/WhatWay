@@ -5,19 +5,29 @@
 public class LocalAnimation : MonoBehaviour
 {
 
-    Vector3 _localPos;
-    bool _wasPlaying;
+    [HideInInspector]
+    public Vector3 LocalPos;
+    public bool WasPlaying;
+    public bool Deactiveate; 
+
 
     void Awake()
     {
-        _localPos = transform.position;
-        _wasPlaying = false;
+       Reset();
+    }
+
+    public void Reset()
+    {
+        LocalPos = transform.position;
+        WasPlaying = false;
+        Deactiveate = false; 
     }
 
     void LateUpdate()
     {
-        if (!animation.isPlaying && !_wasPlaying) return;
-        transform.localPosition += _localPos;
-        _wasPlaying = animation.isPlaying;
+        if (Deactiveate) return; 
+        if (!animation.isPlaying && !WasPlaying) return;
+        transform.localPosition += LocalPos;
+        WasPlaying = animation.isPlaying;
     }
 }

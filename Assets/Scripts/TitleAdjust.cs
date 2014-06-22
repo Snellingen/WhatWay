@@ -16,11 +16,12 @@ public class TitleAdjust : MonoBehaviour
 
     void Update()
     {
-        AdjustWidth();
+        if (GameData.Instance.ScreenResize)
+            AdjustWidth();
     }
     public void AdjustWidth()
     {
-        float ratio = (float)Screen.width/Screen.height; 
+        var ratio = (float)Screen.width/Screen.height; 
         var scale = (ratio >= Tolerance) ? 1 : Scale; 
 
         transform.localScale = new Vector3(

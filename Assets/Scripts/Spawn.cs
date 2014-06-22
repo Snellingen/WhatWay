@@ -94,7 +94,7 @@ public class Spawn : MonoBehaviour
     public void Clear()
     {
         AnimeSpawn();
-        _rightSpawn.Recycle();
+        _rightSpawn.Recycle(0);
     }
 
     public void UpdateSpawnArea()

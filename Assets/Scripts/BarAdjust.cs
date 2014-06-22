@@ -27,6 +27,7 @@ public class BarAdjust : MonoBehaviour
 
     void Update()
     {
-        AdjustWidth();
+        if (GameData.Instance.ScreenResize)
+            AdjustWidth();
     }
 }

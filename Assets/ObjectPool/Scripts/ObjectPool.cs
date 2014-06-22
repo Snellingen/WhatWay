@@ -76,13 +76,10 @@ public sealed class ObjectPool : MonoBehaviour
 
 	public static int Count<T>(T prefab) where T : Component
 	{
-		if (instance.objectLookup.ContainsKey(prefab))
-			return instance.objectLookup[prefab].Count;
-		else
-			return 0;
+	    return instance.objectLookup.ContainsKey(prefab) ? instance.objectLookup[prefab].Count : 0;
 	}
 
-	public static ObjectPool instance
+    public static ObjectPool instance
 	{
 		get
 		{

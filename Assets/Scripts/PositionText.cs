@@ -13,7 +13,8 @@ public class PositionText : MonoBehaviour
 
     void Update()
     {
-        UpdateTextAlignment();
+        if (GameData.Instance.ScreenResize)
+            UpdateTextAlignment();
     }
 
     public void UpdateTextAlignment()
