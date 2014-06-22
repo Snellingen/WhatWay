@@ -67,6 +67,8 @@ public class Controller : MonoBehaviour
     {
         if (_pause) return;
         if (_spawner == null) return;
+        if (CountDownTime.TimeOut)
+            BadMove();
         _timer += Time.deltaTime;
     }
 
@@ -124,9 +126,6 @@ public class Controller : MonoBehaviour
             CountDownTime.StartClock();
             _firstStrike = false; 
         }
-
-        if (CountDownTime.TimeOut)
-            BadMove();
 
         if ((int)dir == (int)_spawner.LastSpawRotation || Cheat)
             GoodMove();
