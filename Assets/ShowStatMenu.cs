@@ -28,7 +28,6 @@ public class ShowStatMenu : ButtonTask
         }
         else
         {
-
             TopObject.animation[AnimationNameTop].speed = 1;
             TopObject.animation[AnimationNameTop].time = 0;
             TopObject.animation.Play(AnimationNameTop);

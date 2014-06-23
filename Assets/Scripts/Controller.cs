@@ -178,20 +178,23 @@ public class Controller : MonoBehaviour
         if (_reactionTimes.Count > 1)
             _reactionTimes.RemoveAt(0);
 
-        GameData.Instance.ThisGameScore = _scoreHandler.GetScore();
-        GameData.Instance.ThisGameART = _reactionTimes.Count > 0 ? _reactionTimes.Average() * 1000 : 0;
+        GameData.Instance.ThisGameScore = (int)_scoreHandler.GetScore();
+        GameData.Instance.ThisGameART = (int) (_reactionTimes.Count > 0 ? _reactionTimes.Average()*1000 : 0);
         GameData.Instance.ThisGameStreak = _maxStreak;
         GameData.Instance.ThisGameAC = _numCleared;
 
-        GameData.Instance.SaveScore();
-
         if (GameOverScreen != null)
         {
-            _scoreHandler.AddScoreToList();
+            _scoreHandler.AddScoreToList(
+                GameData.Instance.ThisGameScore,
+                GameData.Instance.ThisGameAC,
+                GameData.Instance.ThisGameART);
             GameOverScreen.SetActive(true);
             SetPause(true);
 
         }
+
+        GameData.Instance.SaveScore();
 
         Clear();
 

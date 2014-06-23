@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using Assets.Scripts;
 using UnityEngine;
 
 public class ScoreGUI : MonoBehaviour
@@ -22,9 +23,7 @@ public class ScoreGUI : MonoBehaviour
 	void Start () {
 	    WriteScore();
 	    GameData.Instance.LoadScore();
-	    WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last());
-
-       
+	    WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last().Points);
 	}
 
     public void NewGame()
@@ -46,12 +45,12 @@ public class ScoreGUI : MonoBehaviour
         _score = 0; 
         WriteScore();
         GameData.Instance.Score.Sort();
-        WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last());
+        WriteHiScore(GameData.Instance.Score.Count == 0 ? 0 : GameData.Instance.Score.Last().Points);
     }
 
-    public void AddScoreToList()
+    public void AddScoreToList(int points, int count, int time)
     {
-        GameData.Instance.Score.Add(_score);
+        GameData.Instance.TryAddScore(new Score(points, count, time));
     }
 
     public float GetScore()

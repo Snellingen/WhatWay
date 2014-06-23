@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class GameData : MonoBehaviour {
@@ -26,12 +27,12 @@ public class GameData : MonoBehaviour {
     public ColorTheme CurrenTheme = ColorTheme.Day;
 
     [HideInInspector]
-    public List<float> Score = new List<float>();
+    public List<Score> Score = new List<Score>();
 
-    public float ThisGameScore = 0;
-    public float ThisGameART = 0;
-    public float ThisGameAC = 0;
-    public float ThisGameStreak = 0;
+    public int ThisGameScore = 0;
+    public int ThisGameART = 0;
+    public int ThisGameAC = 0;
+    public int ThisGameStreak = 0;
 
     private static GameData _objInstance; 
 
@@ -47,12 +48,12 @@ public class GameData : MonoBehaviour {
         }
     }
 
-    public List<float> GetScore()
+    public List<Score> GetScore()
     {
         return Score; 
     }
 
-    public void TryAddScore(float newScore)
+    public void TryAddScore(Score newScore)
     {
         Score.Sort();
         Score.Add(newScore);
@@ -64,15 +65,33 @@ public class GameData : MonoBehaviour {
     public void SaveScore()
     {
         Score.Sort();
-        PlayerPrefsX.SetFloatArray("Score", Score.ToArray());
+
+        var points = new List<int>();
+        var counts = new List<int>(); 
+        var times = new List<int>();
+
+        foreach (var score in Score)
+        {
+            points.Add(score.Points);
+            counts.Add(score.Count);
+            times.Add(score.Time);
+        }
+
+        PlayerPrefsX.SetIntArray("Points", points.ToArray());
+        PlayerPrefsX.SetIntArray("Counts", counts.ToArray());
+        PlayerPrefsX.SetIntArray("Times", times.ToArray());
     }
 
     public void LoadScore()
     {
        Score.Clear();
-        foreach (var score in PlayerPrefsX.GetFloatArray("Score"))
+        for (var i = 0; i < PlayerPrefsX.GetIntArray("Points").Length; i++)
         {
-            Score.Add(score);
+            Score.Add(new Score(
+                PlayerPrefsX.GetIntArray("Points")[i],
+                PlayerPrefsX.GetIntArray("Counts")[i],
+                PlayerPrefsX.GetIntArray("Times")[i]
+                ));
         }
         Score.Sort();
     }
