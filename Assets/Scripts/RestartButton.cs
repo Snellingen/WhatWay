@@ -38,11 +38,11 @@ public class RestartButton : ButtonTask
 
         if (_launchAnimation != null)
             _launchAnimation["GameOver"].speed = 1;
-        GameController.SetPause(false);
         GameController.NewGame();
-        _timer = 0;
+        GameController.SetPause(false);
         _startTimer = false;
-        _alreadyActive = false;
+        _timer = 0;
         GameOverScreen.SetActive(false);
+        _alreadyActive = false;
     }
 }

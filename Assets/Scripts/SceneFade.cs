@@ -11,7 +11,8 @@ public class SceneFade : MonoBehaviour
     protected virtual void OnFadeInDone()
     {
         var handler = FadeInDone;
-        if (handler != null) handler();
+        if (handler == null) return;
+        handler();
     }
 
     public float fadeSpeed = 0.8f;

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Button : MonoBehaviour
@@ -8,7 +9,6 @@ public class Button : MonoBehaviour
     private Color _originalColor;
     private bool _active = false;
     public AudioSource ButtonSound;
-
     public ButtonTask Action; 
 
     void Start()
@@ -61,6 +61,7 @@ public class Button : MonoBehaviour
         var touchPos = new Vector2(wp.x, wp.y);
         return (collider2D == Physics2D.OverlapPoint(touchPos));
     }
+
 
     void OnDestroy()
     {

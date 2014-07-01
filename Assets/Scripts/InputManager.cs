@@ -25,7 +25,8 @@ public class InputManager : MonoBehaviour
     protected virtual void OnSwipe(SwipeDirection dir)
     {
         var handler = Swipe;
-        if (handler != null) handler(dir);
+        if (handler == null) return;
+        handler(dir);
     }
 
     public delegate void OnTapEvent(Vector2 tapPos, TapState tapState);
@@ -34,7 +35,16 @@ public class InputManager : MonoBehaviour
     protected virtual void OnTap(Vector2 tappos, TapState tapState)
     {
         var handler = Tap;
-        if (handler != null) handler(tappos, tapState);
+        if (handler == null) return;
+        //if (tapState == TapState.Tapped)
+        //{
+        //    foreach (var VARIABLE in handler.GetInvocationList())
+        //    {
+        //        Debug.Log(VARIABLE.ToString());
+        //    }
+        //}
+            
+        handler(tappos, tapState);
     }
 
     public Transform Trail;
@@ -45,7 +55,7 @@ public class InputManager : MonoBehaviour
     private Vector2 _firstPressPos, _secondPressPos, _currentSwipe;
 
 #if UNITY_IPHONE
-    private const float TOLERANCE = 40;
+    private const float TOLERANCE = 50;
 #else
     private const float TOLERANCE = 5;
 #endif

@@ -73,7 +73,6 @@ public class ScoreGUI : MonoBehaviour
         if (timeBonus > 100 || timeBonus <= 0) timeBonus = 100;
         var streakBonus = streak * cntArrows;
         var total = (timeBonus * streakBonus) / 10;
-        //Debug.Log("Timebonus: " + timeBonus + " StreakBonus: " + streakBonus + " Total =" + total);
 
         return (int) total;
     }

@@ -18,7 +18,9 @@ public class GameData : MonoBehaviour {
     public static void FireVibrateMe()
     {
         var handler = VibrateMe;
-        if (handler != null) handler(null, EventArgs.Empty);
+        if (handler == null) return;
+        Debug.Log("VibrateMe");
+        handler(null, EventArgs.Empty);
     }
 
 

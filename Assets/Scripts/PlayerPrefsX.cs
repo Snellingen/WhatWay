@@ -2,6 +2,7 @@
 // Contribution (Created Bool Array) 10/2010: Daniel P. Rossi (DR9885)
 // Contribution (Made functions public) 01/2011: Bren
 
+using System.Globalization;
 using UnityEngine;
 using System;
 
@@ -14,7 +15,7 @@ public static class PlayerPrefsX
     /// </summary>
     public static bool SetVector3(string key, Vector3 vector)
     {
-        return SetFloatArray(key, new float[3] { vector.x, vector.y, vector.z });
+        return SetFloatArray(key, new[] { vector.x, vector.y, vector.z });
     }
 
     /// <summary>
@@ -39,13 +40,13 @@ public static class PlayerPrefsX
     {
         if (boolArray.Length == 0) return false;
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        for (int i = 0; i < boolArray.Length - 1; i++)
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < boolArray.Length - 1; i++)
             sb.Append(boolArray[i]).Append("|");
         sb.Append(boolArray[boolArray.Length - 1]);
 
         try { PlayerPrefs.SetString(key, sb.ToString()); }
-        catch (Exception e) { return false; }
+        catch (Exception) { return false; }
         return true;
     }
 
@@ -54,15 +55,12 @@ public static class PlayerPrefsX
     /// </summary>
     public static bool[] GetBoolArray(string key)
     {
-        if (PlayerPrefs.HasKey(key))
-        {
-            string[] stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
-            bool[] boolArray = new bool[stringArray.Length];
-            for (int i = 0; i < stringArray.Length; i++)
-                boolArray[i] = Convert.ToBoolean(stringArray[i]);
-            return boolArray;
-        }
-        return new bool[0];
+        if (!PlayerPrefs.HasKey(key)) return new bool[0];
+        var stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
+        var boolArray = new bool[stringArray.Length];
+        for (var i = 0; i < stringArray.Length; i++)
+            boolArray[i] = Convert.ToBoolean(stringArray[i]);
+        return boolArray;
     }
 
     /// <summary>
@@ -73,8 +71,8 @@ public static class PlayerPrefsX
     {
         if (PlayerPrefs.HasKey(key))
             return GetBoolArray(key);
-        bool[] boolArray = new bool[defaultSize];
-        for (int i = 0; i < defaultSize; i++)
+        var boolArray = new bool[defaultSize];
+        for (var i = 0; i < defaultSize; i++)
             boolArray[i] = defaultValue;
         return boolArray;
     }
@@ -90,13 +88,13 @@ public static class PlayerPrefsX
     {
         if (intArray.Length == 0) return false;
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        var sb = new System.Text.StringBuilder();
         for (int i = 0; i < intArray.Length - 1; i++)
             sb.Append(intArray[i]).Append("|");
         sb.Append(intArray[intArray.Length - 1]);
 
         try { PlayerPrefs.SetString(key, sb.ToString()); }
-        catch (Exception e) { return false; }
+        catch (Exception) { return false; }
         return true;
     }
 
@@ -105,15 +103,12 @@ public static class PlayerPrefsX
     /// </summary>
     public static int[] GetIntArray(string key)
     {
-        if (PlayerPrefs.HasKey(key))
-        {
-            string[] stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
-            int[] intArray = new int[stringArray.Length];
-            for (int i = 0; i < stringArray.Length; i++)
-                intArray[i] = Convert.ToInt32(stringArray[i]);
-            return intArray;
-        }
-        return new int[0];
+        if (!PlayerPrefs.HasKey(key)) return new int[0];
+        var stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
+        var intArray = new int[stringArray.Length];
+        for (var i = 0; i < stringArray.Length; i++)
+            intArray[i] = Convert.ToInt32(stringArray[i]);
+        return intArray;
     }
 
     /// <summary>
@@ -124,8 +119,8 @@ public static class PlayerPrefsX
     {
         if (PlayerPrefs.HasKey(key))
             return GetIntArray(key);
-        int[] intArray = new int[defaultSize];
-        for (int i = 0; i < defaultSize; i++)
+        var intArray = new int[defaultSize];
+        for (var i = 0; i < defaultSize; i++)
             intArray[i] = defaultValue;
         return intArray;
     }
@@ -141,8 +136,8 @@ public static class PlayerPrefsX
     {
         if (floatArray.Length == 0) return false;
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        for (int i = 0; i < floatArray.Length - 1; i++)
+        var sb = new System.Text.StringBuilder();
+        for (var i = 0; i < floatArray.Length - 1; i++)
             sb.Append(floatArray[i]).Append("|");
         sb.Append(floatArray[floatArray.Length - 1]);
 
@@ -150,7 +145,7 @@ public static class PlayerPrefsX
         {
             PlayerPrefs.SetString(key, sb.ToString());
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
@@ -162,15 +157,12 @@ public static class PlayerPrefsX
     /// </summary>
     public static float[] GetFloatArray(string key)
     {
-        if (PlayerPrefs.HasKey(key))
-        {
-            string[] stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
-            float[] floatArray = new float[stringArray.Length];
-            for (int i = 0; i < stringArray.Length; i++)
-                floatArray[i] = Convert.ToSingle(stringArray[i]);
-            return floatArray;
-        }
-        return new float[0];
+        if (!PlayerPrefs.HasKey(key)) return new float[0];
+        var stringArray = PlayerPrefs.GetString(key).Split("|"[0]);
+        var floatArray = new float[stringArray.Length];
+        for (var i = 0; i < stringArray.Length; i++)
+            floatArray[i] = Convert.ToSingle(stringArray[i]);
+        return floatArray;
     }
 
     /// <summary>
@@ -181,8 +173,8 @@ public static class PlayerPrefsX
     {
         if (PlayerPrefs.HasKey(key))
             return GetFloatArray(key);
-        float[] floatArray = new float[defaultSize];
-        for (int i = 0; i < defaultSize; i++)
+        var floatArray = new float[defaultSize];
+        for (var i = 0; i < defaultSize; i++)
             floatArray[i] = defaultValue;
         return floatArray;
     }
@@ -198,8 +190,8 @@ public static class PlayerPrefsX
     {
         if (stringArray.Length == 0) return false;
         try
-        { PlayerPrefs.SetString(key, String.Join(separator.ToString(), stringArray)); }
-        catch (Exception e)
+        { PlayerPrefs.SetString(key, String.Join(separator.ToString(CultureInfo.InvariantCulture), stringArray)); }
+        catch (Exception)
         { return false; }
         return true;
     }
@@ -242,8 +234,8 @@ public static class PlayerPrefsX
     {
         if (PlayerPrefs.HasKey(key))
             return PlayerPrefs.GetString(key).Split(separator);
-        string[] stringArray = new string[defaultSize];
-        for (int i = 0; i < defaultSize; i++)
+        var stringArray = new string[defaultSize];
+        for (var i = 0; i < defaultSize; i++)
             stringArray[i] = defaultValue;
         return stringArray;
     }

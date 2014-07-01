@@ -48,10 +48,9 @@ public class Spawn : MonoBehaviour
 
     public void StartGame()
     {
+
         ObjectPool.CreatePool(SpawnObject);
-
-
-        AnimeSpawn();
+        //AnimeSpawn();
         var spwnpos = Camera.main.ScreenToWorldPoint(new Vector2(_screenSize.x / 2, _screenSize.y / 2));
         spwnpos.z = 10; 
         UpdateSpawnArea();
@@ -93,8 +92,15 @@ public class Spawn : MonoBehaviour
 
     public void Clear()
     {
-        AnimeSpawn();
-        _rightSpawn.Recycle(0);
+        if (_rightSpawn != null) _rightSpawn.Recycle();
+
+        if (LastSpawned.Count == 0) return;
+        foreach (var go in LastSpawned.Select(o => o as Arrow))
+        {
+            go.Recycle();
+        }
+        LastSpawned.Clear();
+        _rightSpawn.Recycle();
     }
 
     public void UpdateSpawnArea()

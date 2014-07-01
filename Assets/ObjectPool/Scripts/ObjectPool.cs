@@ -70,8 +70,8 @@ public sealed class ObjectPool : MonoBehaviour
 			obj.gameObject.SetActive(false);
 
 		}
-		else
-			Object.Destroy(obj.gameObject);
+        //else
+        //    //Object.Destroy(obj.gameObject);
 	}
 
 	public static int Count<T>(T prefab) where T : Component
